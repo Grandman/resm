@@ -17,17 +17,19 @@
 
 start(_StartType, _StartArgs) ->
     Dispatch = cowboy_router:compile([{'_',[
-     {"/allocate/:user", allocate_handler, []},
-     {"/deallocate/:resource", deallocate_handler, []},
-     {"/list/[:user]", list_handler, []},
-     {"/reset", reset_handler, []},
-     {'_', not_found_handler, []}
-   ]}]),
+      {"/allocate/:user", allocate_handler, []},
+      {"/deallocate/:resource", deallocate_handler, []},
+      {"/list/[:user]", list_handler, []},
+      {"/reset", reset_handler, []},
+      {'_', not_found_handler, []}
+    ]}]),
 
-    {ok, _} = cowboy:start_http(?MODULE, 100, [{port, 8080}],
-        [{env, [{dispatch, Dispatch}]}]
-   ),
-    resm:start_link(3),
+    {ok, Port} = application:get_env(resm, port),
+    {ok, _} = cowboy:start_http(?MODULE, 100, [{port, Port}],
+      [{env, [{dispatch, Dispatch}]}]
+    ),
+    {ok, ResourcesNumber} = application:get_env(resm, resources_number),
+    resm:start_link(ResourcesNumber),
     resm_sup:start_link().
 %%--------------------------------------------------------------------
 stop(_State) ->
