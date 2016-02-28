@@ -1,6 +1,8 @@
 -module(resm).
 -behavior(gen_server).
--export([init/1, allocate/1, deallocate/1, list/0, list/1, stop/1, reset/0, start_link/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2, code_change/3]).
+-export([allocate/1, deallocate/1, list/0, list/1,
+         init/1, stop/1, reset/0, start_link/1, handle_call/3,
+         handle_cast/2, handle_info/2, terminate/2, code_change/3]).
 
 -define(SERVER, ?MODULE).
 
@@ -35,7 +37,7 @@ handle_call({allocate, _User}, _From, #{allocated := _Allocated, deallocated := 
   {reply, {error, out_of_resources}, Resources};
 
 handle_call({allocate, User}, _From, #{allocated := Allocated, deallocated := [FreeResource | Tail]}) ->
-  {reply, {ok, FreeResource}, #{allocated => maps:put(FreeResource, User, Allocated), deallocated => Tail}};
+  {reply, {ok, {resource, FreeResource}}, #{allocated => maps:put(FreeResource, User, Allocated), deallocated => Tail}};
 
 handle_call({deallocate, Resource}, _From, #{allocated := Allocated, deallocated := Deallocated} = Resources) ->
   case maps:find(Resource, Allocated) of
@@ -44,10 +46,10 @@ handle_call({deallocate, Resource}, _From, #{allocated := Allocated, deallocated
   end;
 
 handle_call(list, _From, Resources) ->
-  {reply, {ok, Resources}, Resources};
+  {reply, {ok, {resources, Resources}}, Resources};
 
 handle_call({list, User}, _From, #{allocated := Allocated, deallocated := _Deallocated} = State) ->
-  {reply, {ok, allocated_by_user(User, Allocated)}, State};
+  {reply, {ok, {resources, allocated_by_user(User, Allocated)}}, State};
 
 handle_call(reset, _From, #{allocated := Allocated, deallocated := Deallocated}) ->
   {reply, ok, #{allocated => #{}, deallocated => Deallocated ++ maps:keys(Allocated)}}.

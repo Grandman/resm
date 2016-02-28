@@ -10,13 +10,13 @@ init(_Type, Req, _Opts) ->
   {ok, Req2, {user, User}}.
 
 handle(Req, {user, undefined}) ->
-  {ok, Resources} = resm:list(),
+  {ok, {resources, Resources}} = resm:list(),
   {ok, Req2} = cowboy_req:reply(200, [?JSON_CONTENT_TYPE],
                                 jsx:encode(empty_allocated_to_list(Resources)), Req),
   {ok, Req2, {user, undefined}};
 
 handle(Req, {user, User}) ->
-  {ok, Resources} = resm:list(User),
+  {ok, {resources, Resources}} = resm:list(User),
   {ok, Req2} = cowboy_req:reply(200, [?JSON_CONTENT_TYPE],
                                 jsx:encode(Resources), Req),
   {ok, Req2, {user, User}}.

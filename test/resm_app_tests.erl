@@ -1,7 +1,7 @@
 -module(resm_app_tests).
 -include_lib("eunit/include/eunit.hrl").
 
--define(APPS, [ranch, cowlib, cowboy, resm]).
+-define(APPS, [ranch, cowlib, cowboy, jsx, resm]).
 
 http_test_() ->
   {
