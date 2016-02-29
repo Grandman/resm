@@ -9,7 +9,8 @@ Erlang/OTP 18
 
 Configuration
 -----
-For configuring port or resources number just edit file `resm.config`.
+For configuring port or resources number just edit file `resm.config`. The changes will be applied at next run.
+
 Default values is:
 * port = 8080
 * resources number = 3
