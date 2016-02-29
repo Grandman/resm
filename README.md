@@ -35,6 +35,10 @@ Run
 Run in docker container
 -----
     $ make docker-run
+    
+Start docker container if it was stopped
+-----
+    $ make docker-start
 
 Stop docker container
 -----
