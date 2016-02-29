@@ -37,7 +37,7 @@ handle_call({allocate, _User}, _From, #{allocated := _Allocated, deallocated := 
   {reply, {error, out_of_resources}, Resources};
 
 handle_call({allocate, User}, _From, #{allocated := Allocated, deallocated := [FreeResource | Tail]}) ->
-  {reply, {ok, {resource, FreeResource}}, #{allocated => maps:put(FreeResource, User, Allocated), deallocated => Tail}};
+  {reply, {ok, {resource, FreeResource}}, #{allocated => Allocated#{FreeResource => User}, deallocated => Tail}};
 
 handle_call({deallocate, Resource}, _From, #{allocated := Allocated, deallocated := Deallocated} = Resources) ->
   case maps:find(Resource, Allocated) of
